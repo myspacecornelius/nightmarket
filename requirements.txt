@@ -37,7 +37,7 @@ tenacity==8.2.3
 # Geospatial
 geopy==2.4.1
 numpy<2.0
-shapely==2.0.3
+shapely==2.1.2
 geohash2==1.1
 h3==3.7.7
 
