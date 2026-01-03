@@ -4,12 +4,12 @@ from sqlalchemy import func, text, and_, or_
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
 from pydantic import BaseModel, UUID4
-import uuid
 import math
 
 from services.database import get_db
 from services.models.dropzone import DropZone, DropZoneMember, DropZoneCheckIn, DropZoneStatus, MemberRole
 from services.models.user import User
+from services.core.auth import get_current_active_user
 
 router = APIRouter()
 
@@ -68,12 +68,11 @@ def haversine_distance(lat1: float, lng1: float, lat2: float, lng2: float) -> fl
 @router.post("/v1/dropzones", response_model=DropZoneResponse)
 async def create_dropzone(
     dropzone_data: DropZoneCreate,
-    db: Session = Depends(get_db)
-    # TODO: Add authentication to get current_user
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
 ):
     """Create a new dropzone"""
-    # For now, use a placeholder user ID - in production this would come from auth
-    owner_id = uuid.uuid4()  # TODO: Replace with current_user.user_id
+    owner_id = current_user.user_id
     
     # Create PostGIS point for center
     center_point_wkt = f"POINT({dropzone_data.center_lng} {dropzone_data.center_lat})"
@@ -213,8 +212,8 @@ async def list_dropzones(
 async def check_in_to_dropzone(
     dropzone_id: UUID4,
     check_in_data: CheckInRequest,
-    db: Session = Depends(get_db)
-    # TODO: Add authentication to get current_user
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
 ):
     """Check in to a dropzone with location verification"""
     # Get dropzone
@@ -254,8 +253,7 @@ async def check_in_to_dropzone(
             detail=f"Too far from dropzone. Distance: {distance:.1f}m, Required: {dropzone.check_in_radius}m"
         )
     
-    # TODO: Get current user from authentication
-    user_id = uuid.uuid4()  # Placeholder
+    user_id = current_user.user_id
     
     # Check if user already checked in today
     today = datetime.now().date()
@@ -393,11 +391,11 @@ async def get_dropzone_details(
 @router.post("/v1/dropzones/{dropzone_id}/join")
 async def join_dropzone(
     dropzone_id: UUID4,
-    db: Session = Depends(get_db)
-    # TODO: Add authentication
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
 ):
     """Join a dropzone as a member"""
-    user_id = uuid.uuid4()  # TODO: Get from auth
+    user_id = current_user.user_id
     
     # Check if already a member
     existing_member = db.query(DropZoneMember).filter(
@@ -422,4 +420,3 @@ async def join_dropzone(
     db.commit()
     
     return {"success": True, "message": "Successfully joined dropzone"}
-
