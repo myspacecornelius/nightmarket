@@ -25,7 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu'
-import { useRealtimeNotifications, useWebSocket } from '@/hooks/useWebSocket'
+import { useRealtimeNotifications, useWebSocket } from '@/components/WebSocketProvider'
 import { cn } from '@/lib/cn'
 
 interface Notification {

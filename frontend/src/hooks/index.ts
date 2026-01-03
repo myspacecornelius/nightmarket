@@ -6,9 +6,9 @@
 export { useAuth, AuthProvider, AuthContext, MockAuthProvider } from './useAuth';
 export type { AuthContextType } from './useAuth';
 
-// WebSocket
-export { WebSocketProvider, useWebSocket } from './useWebSocket';
-export type { WebSocketMessage, WebSocketContextType } from './useWebSocket';
+// WebSocket - re-export from components/lib (the active implementation)
+export { WebSocketProvider, useWebSocket, useRealtimeNotifications } from '../components/WebSocketProvider';
+export type { WebSocketMessage, WebSocketContextType } from '../lib/websocket';
 
 // Marketplace / Feed
 export { useActivityFeed } from './useActivityFeed';

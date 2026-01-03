@@ -5,6 +5,25 @@ import { apiClient, type Listing, type HyperlocalFeedResponse } from '@/lib/api-
 
 const DEFAULT_LOCATION = { lat: 42.3505, lng: -71.0763 };
 
+// Fallback sneaker images for demo when API doesn't return images
+const FALLBACK_IMAGES = [
+  'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop',
+  'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=400&fit=crop',
+  'https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400&h=400&fit=crop',
+  'https://images.unsplash.com/photo-1539185441755-769473a23570?w=400&h=400&fit=crop',
+  'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=400&fit=crop',
+  'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=400&h=400&fit=crop',
+  'https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=400&h=400&fit=crop',
+  'https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=400&h=400&fit=crop',
+];
+
+const getListingImage = (listing: Listing, index: number): string => {
+  if (listing.images && listing.images.length > 0 && listing.images[0]) {
+    return listing.images[0];
+  }
+  return FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
+};
+
 const TABS = [
   { id: 'all', label: 'All' },
   { id: 'DS', label: 'Deadstock' },
@@ -146,10 +165,11 @@ export function MarketplacePage() {
         {/* Grid */}
         {!isLoading && !error && filteredListings.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {filteredListings.map((listing) => (
+            {filteredListings.map((listing, index) => (
               <ListingCard 
                 key={listing.id} 
                 listing={listing} 
+                imageUrl={getListingImage(listing, index)}
                 onClick={() => navigate(`/marketplace/${listing.id}`)} 
               />
             ))}
@@ -160,7 +180,7 @@ export function MarketplacePage() {
   );
 }
 
-function ListingCard({ listing, onClick }: { listing: Listing; onClick: () => void }) {
+function ListingCard({ listing, imageUrl, onClick }: { listing: Listing; imageUrl: string; onClick: () => void }) {
   const [saved, setSaved] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
 
@@ -176,7 +196,7 @@ function ListingCard({ listing, onClick }: { listing: Listing; onClick: () => vo
       <div className="relative aspect-square" style={{ background: '#F3F3F1' }}>
         {!imgLoaded && <div className="absolute inset-0 animate-pulse" style={{ background: '#E8E8E6' }} />}
         <img
-          src={listing.images?.[0] || '/placeholder.png'}
+          src={imageUrl}
           alt={listing.title}
           className={`w-full h-full object-cover transition-opacity duration-300 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setImgLoaded(true)}
