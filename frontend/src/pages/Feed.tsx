@@ -1,9 +1,10 @@
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Filter, Zap, Clock, TrendingUp, Users } from 'lucide-react';
 import DropCard from '@/components/hyperlocal/DropCard';
 import AnimatedButton from '@/components/ui/animated-button';
+import { LivePulse } from '@/components/community/LivePulse';
 import { drops } from '@/mocks/drops';
 import { useStaggeredIntersection } from '@/hooks/useIntersectionObserver';
 
@@ -78,12 +79,14 @@ const Feed = () => {
   };
 
   return (
-    <motion.div 
-      className="space-y-8 p-6"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <div className="flex gap-6 p-6">
+      {/* Main Content */}
+      <motion.div 
+        className="flex-1 space-y-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
       {/* Enhanced Header */}
       <motion.div 
         className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-sage-100 via-earth-100 to-sage-200 dark:from-sage-800 dark:via-earth-800 dark:to-sage-700 p-8"
@@ -231,7 +234,15 @@ const Feed = () => {
           Load More Signals
         </AnimatedButton>
       </motion.div>
-    </motion.div>
+      </motion.div>
+
+      {/* Live Pulse Sidebar */}
+      <div className="hidden xl:block w-80 flex-shrink-0">
+        <div className="sticky top-6">
+          <LivePulse />
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -1,24 +1,22 @@
 /**
- * Elegant Sidebar Navigation
- * Refined, minimal sidebar with smooth interactions
+ * Sidebar Navigation
+ * Clean, functional sidebar
  */
 
 import { NavLink } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { Home, Map, Zap, User, Droplets, Route, Rss, Calendar, ClipboardList, ShoppingBag } from 'lucide-react'
+import { Home, Map, Zap, User, Droplets, Rss, ClipboardList, ShoppingBag, Users } from 'lucide-react'
 import { useUiStore } from '@/store/ui'
 import { cn } from '@/lib/cn'
 
 const links = [
   { to: '/', label: 'Dashboard', icon: Home },
-  { to: '/laces', label: 'LACES', icon: Zap },
-  { to: '/marketplace', label: 'Marketplace', icon: ShoppingBag },
-  { to: '/dropzones', label: 'DropZones', icon: Droplets },
-  { to: '/thriftroutes', label: 'ThriftRoutes', icon: Route },
   { to: '/feed', label: 'Feed', icon: Rss },
+  { to: '/marketplace', label: 'Marketplace', icon: ShoppingBag },
+  { to: '/crews', label: 'Crews', icon: Users },
+  { to: '/dropzones', label: 'Drop Zones', icon: Droplets },
   { to: '/map', label: 'Map', icon: Map },
-  { to: '/drops', label: 'Drops', icon: Calendar },
   { to: '/quests', label: 'Quests', icon: ClipboardList },
+  { to: '/laces', label: 'LACES', icon: Zap },
   { to: '/profile', label: 'Profile', icon: User },
 ]
 
@@ -26,21 +24,18 @@ export const Sidebar = () => {
   const { isSidebarOpen } = useUiStore()
 
   return (
-    <motion.aside
-      initial={{ x: -20, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+    <aside
       className={cn(
-        'relative hidden h-screen bg-surface border-r border-elegant-200 transition-all duration-300 md:flex md:flex-col',
+        'relative hidden h-screen bg-card border-r border-border transition-all duration-300 md:flex md:flex-col',
         isSidebarOpen ? 'w-64' : 'w-20',
       )}
     >
-      {/* Logo / Brand */}
-      <div className="flex items-center justify-center h-16 border-b border-elegant-200 px-4">
+      {/* Logo */}
+      <div className="flex items-center justify-center h-16 border-b border-border px-4">
         <h1 
           className={cn(
-            'font-serif font-bold text-indigo-600 transition-all duration-300',
-            isSidebarOpen ? 'text-2xl' : 'text-xl'
+            'font-bold text-primary transition-all duration-300',
+            isSidebarOpen ? 'text-xl' : 'text-lg'
           )}
         >
           {isSidebarOpen ? 'Dharma' : 'D'}
@@ -48,88 +43,49 @@ export const Sidebar = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-6 px-3">
+      <nav className="flex-1 overflow-y-auto py-4 px-3">
         <ul className="space-y-1">
-          {links.map((link, index) => (
-            <motion.li
-              key={link.to}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ 
-                duration: 0.3, 
-                delay: index * 0.05,
-                ease: [0.4, 0, 0.2, 1]
-              }}
-            >
+          {links.map((link) => (
+            <li key={link.to}>
               <NavLink
                 to={link.to}
                 end={link.to === '/'}
                 className={({ isActive }) =>
                   cn(
-                    'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
-                    'hover:bg-elegant-100 hover:text-indigo-600',
+                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                    'hover:bg-muted',
                     isActive 
-                      ? 'bg-indigo-50 text-indigo-600 shadow-sm' 
-                      : 'text-elegant-700',
+                      ? 'bg-primary/10 text-primary' 
+                      : 'text-muted-foreground',
                     !isSidebarOpen && 'justify-center px-2',
                   )
                 }
               >
-                {({ isActive }) => (
-                  <>
-                    <link.icon 
-                      className={cn(
-                        'h-5 w-5 transition-transform duration-200 group-hover:scale-110',
-                        isActive && 'scale-110'
-                      )} 
-                      strokeWidth={isActive ? 2.5 : 2}
-                    />
-                    <span 
-                      className={cn(
-                        'transition-opacity duration-200',
-                        !isSidebarOpen && 'hidden'
-                      )}
-                    >
-                      {link.label}
-                    </span>
-                    
-                    {/* Active Indicator */}
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeIndicator"
-                        className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-600"
-                        transition={{ 
-                          type: "spring", 
-                          stiffness: 500, 
-                          damping: 30 
-                        }}
-                      />
-                    )}
-                  </>
-                )}
+                <link.icon className="h-5 w-5" strokeWidth={2} />
+                {isSidebarOpen && <span>{link.label}</span>}
               </NavLink>
-            </motion.li>
+            </li>
           ))}
         </ul>
       </nav>
 
-      {/* Footer / User Section (Optional) */}
-      <div className="border-t border-elegant-200 p-4">
+      {/* User Section */}
+      <div className="border-t border-border p-4">
         <div className={cn(
-          'flex items-center gap-3 transition-all duration-300',
+          'flex items-center gap-3',
           !isSidebarOpen && 'justify-center'
         )}>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold">
+          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-semibold">
             D
           </div>
           {isSidebarOpen && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-elegant-900 truncate">David</p>
-              <p className="text-xs text-elegant-500 truncate">david@dharma.com</p>
+              <p className="text-sm font-medium truncate">David</p>
+              <p className="text-xs text-muted-foreground truncate">david@dharma.com</p>
             </div>
           )}
         </div>
       </div>
-    </motion.aside>
+    </aside>
   )
 }

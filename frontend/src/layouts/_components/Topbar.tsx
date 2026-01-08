@@ -1,10 +1,9 @@
 /**
- * Elegant Topbar
- * Floating topbar with refined search and user controls
+ * Topbar
+ * Clean, functional topbar
  */
 
 import { Menu, Search, Bell } from 'lucide-react'
-import { motion } from 'framer-motion'
 
 import WalletDrawer from '@/components/hyperlocal/WalletDrawer'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -32,31 +31,26 @@ export const Topbar = () => {
     .join('')
 
   return (
-    <motion.header
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-      className="flex h-16 items-center justify-between gap-4 border-b border-elegant-200 bg-surface/95 backdrop-blur-sm px-6 sticky top-0 z-50"
-    >
+    <header className="flex h-16 items-center justify-between gap-4 border-b border-border bg-card px-6 sticky top-0 z-50">
       {/* Left Side - Menu & Search */}
       <div className="flex items-center gap-4 flex-1">
         <Button 
           variant="ghost" 
           size="icon" 
-          className="md:hidden hover:bg-elegant-100" 
+          className="md:hidden" 
           onClick={toggleSidebar}
         >
-          <Menu className="h-5 w-5 text-elegant-700" />
+          <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle navigation menu</span>
         </Button>
 
-        {/* Elegant Search */}
+        {/* Search */}
         <div className="relative w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-elegant-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search Dharma..."
-            className="w-full pl-10 pr-4 py-2 bg-elegant-50 border-elegant-200 rounded-lg text-sm focus:bg-white focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
+            placeholder="Search..."
+            className="w-full pl-10 pr-4"
           />
         </div>
       </div>
@@ -67,69 +61,52 @@ export const Topbar = () => {
         <WalletDrawer />
 
         {/* Notifications */}
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="relative hover:bg-elegant-100 rounded-full"
-          >
-            <Bell className="h-5 w-5 text-elegant-700" />
-            {/* Notification Badge */}
-            <span className="absolute top-1 right-1 w-2 h-2 bg-amber-500 rounded-full" />
-            <span className="sr-only">Notifications</span>
-          </Button>
-        </motion.div>
+        <Button variant="ghost" size="icon" className="relative">
+          <Bell className="h-5 w-5" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+          <span className="sr-only">Notifications</span>
+        </Button>
 
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 rounded-full hover:bg-elegant-100 p-1 pr-3 transition-colors duration-200"
-            >
-              <Avatar className="h-8 w-8 border-2 border-elegant-200">
+            <button className="flex items-center gap-2 rounded-full hover:bg-muted p-1 pr-3 transition-colors">
+              <Avatar className="h-8 w-8">
                 <AvatarImage src={user?.avatar_url} alt={user?.username} />
-                <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white text-xs font-semibold">
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold">
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <span className="hidden md:block text-sm font-medium text-elegant-900">
+              <span className="hidden md:block text-sm font-medium">
                 {user?.display_name || user?.username || 'Member'}
               </span>
-            </motion.button>
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <span className="text-sm font-semibold text-elegant-900">
+                <span className="text-sm font-semibold">
                   {user?.display_name || user?.username || 'Member'}
                 </span>
-                <span className="text-xs text-elegant-500">
+                <span className="text-xs text-muted-foreground">
                   {user?.email || 'member@dharma.com'}
                 </span>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
-              <span className="text-sm">Profile</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              <span className="text-sm">Settings</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              <span className="text-sm">LACES Balance</span>
-            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">Settings</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">LACES Balance</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onSelect={() => logout()}
-              className="text-red-600 focus:text-red-700 focus:bg-red-50 cursor-pointer"
+              className="text-destructive cursor-pointer"
             >
-              <span className="text-sm font-medium">Logout</span>
+              Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </motion.header>
+    </header>
   )
 }

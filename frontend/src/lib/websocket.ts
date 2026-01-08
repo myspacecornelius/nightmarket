@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useRef } from 'react';
+import { createContext, useContext } from 'react';
 
 export interface WebSocketMessage {
   type: string;
@@ -30,7 +30,7 @@ export class WebSocketManager {
   private token: string;
   private subscribers: Map<string, Set<(data: any) => void>> = new Map();
   private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
+  private maxReconnectAttempts = 3;
   private reconnectDelay = 1000;
   private isConnected = false;
   private onConnectionChange?: (connected: boolean) => void;
@@ -72,12 +72,12 @@ export class WebSocketManager {
         this.scheduleReconnect();
       };
 
-      this.ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+      this.ws.onerror = () => {
+        // Silently handle WebSocket errors - connection issues are expected when backend is down
       };
 
-    } catch (error) {
-      console.error('Failed to connect WebSocket:', error);
+    } catch {
+      // Silently handle connection failures
       this.scheduleReconnect();
     }
   }

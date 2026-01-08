@@ -23,6 +23,7 @@ const Shop = lazy(() => import('@/pages/Shop'));
 const Tasks = lazy(() => import('@/pages/Tasks'));
 const Marketplace = lazy(() => import('@/pages/MarketplacePage'));
 const ListingDetail = lazy(() => import('@/pages/ListingDetailPage'));
+const Crews = lazy(() => import('@/pages/CrewsPage'));
 
 
 // New Components
@@ -63,6 +64,7 @@ const router = createBrowserRouter([
       { path: 'tasks', element: <Tasks /> },
       { path: 'marketplace', element: <Marketplace /> },
       { path: 'marketplace/:id', element: <ListingDetail /> },
+      { path: 'crews', element: <Crews /> },
     ],
   },
   {
