@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {
   WebSocketManager,
-  WebSocketMessage,
-  WebSocketContextType,
   WebSocketContext,
   useWebSocket as useSharedWebSocket,
 } from '../lib/websocket';
+import type { WebSocketMessage, WebSocketContextType } from '../lib/websocket';
 
 interface WebSocketProviderProps {
   children: React.ReactNode;
@@ -104,4 +103,21 @@ export const useSystemAlerts = (callback: (alert: any) => void) => {
     const unsubscribe = subscribe('system_alerts', callback);
     return unsubscribe;
   }, [subscribe, callback]);
+};
+
+export const useRealtimeNotifications = () => {
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const { subscribe } = useWebSocket();
+  
+  useEffect(() => {
+    const unsubscribe = subscribe('notification', (data) => {
+      setNotifications(prev => [data, ...prev].slice(0, 50)); // Keep last 50
+    });
+    return unsubscribe;
+  }, [subscribe]);
+  
+  return {
+    notifications,
+    clearNotifications: () => setNotifications([])
+  };
 };

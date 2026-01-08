@@ -25,7 +25,7 @@ import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/cn'
 import { apiClient } from '@/lib/api-client'
 import { useAuth } from '@/hooks/useAuth'
-import { useWebSocket } from '@/hooks/useWebSocket'
+import { useWebSocket } from '@/components/WebSocketProvider'
 
 interface LeaderboardEntry {
   id: string

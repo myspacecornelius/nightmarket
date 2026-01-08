@@ -4,7 +4,7 @@ import { Bell, BellRing } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/badge'
 import { NotificationCenter } from './NotificationCenter'
-import { useWebSocket } from '@/hooks/useWebSocket'
+import { useWebSocket } from '@/components/WebSocketProvider'
 import { cn } from '@/lib/cn'
 
 interface NotificationTriggerProps {

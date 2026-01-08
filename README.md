@@ -1,393 +1,192 @@
-# 🔥 Dharma
-## *The Underground Network for Sneaker Culture*
+# Dharma
 
-[![Python Version](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
-[![CI](https://github.com/myspacecornelius/Night_Market/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/myspacecornelius/Night_Market/actions/workflows/ci-cd.yml)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/myspacecornelius/Night_Market)
+A hyperlocal sneaker marketplace and community platform with real-time activity feeds, geospatial listings, and a token-based reward system.
 
-## 🌟 The Vision
-
-**Dharma isn't just another sneaker bot.** It's the foundation for a new kind of sneaker community—one that rewards authenticity, celebrates local culture, and puts power back in the hands of real enthusiasts.
-
-### What We're Building
-
-- **🗺️ Hyperlocal Heatmaps**: Real-time signals from sneakerheads in your city
-- **🪙 LACES Token Economy**: Earn rewards for contributing to the community  
-- **🎯 Drop Zones**: Coordinate releases, share intel, build together
-- **🤝 Community-First**: No gatekeeping, no backdoors—just pure sneaker culture
-- **🔒 Privacy by Design**: Your data stays yours, always
-
-### Why It Matters
-
-The sneaker game has been hijacked by corporate interests and exclusive access. **Dharma brings it back to the streets.** We're creating infrastructure that serves the community, not just the highest bidder.
-
----
-
-## 🚀 Quick Start
-*Get Dharma running in under 3 minutes*
+## Quick Start
 
 ### Prerequisites
-- Docker Desktop installed and running
-- Git (for cloning)
-- 5 minutes of your time
 
-### The 3-Step Onboarding
+- **Docker Desktop** — [Download here](https://www.docker.com/products/docker-desktop/)
+- **Git** — [Download here](https://git-scm.com/downloads)
+
+### Step-by-Step Setup
 
 ```bash
-# 1️⃣ Clone and enter Dharma
+# 1. Clone the repository
 git clone https://github.com/myspacecornelius/Night_Market.git
 cd Night_Market
 
-# 2️⃣ Set up your environment
+# 2. Create environment file
 make setup
 
-# 3️⃣ Launch the underground network
+# 3. Start all services
 make up
 ```
 
-**That's it.** Open your browser to `http://localhost:5177` and witness Dharma come alive.
+Wait ~60 seconds for services to initialize, then open:
 
-### What You'll See
+| Service   | URL                          |
+|-----------|------------------------------|
+| Frontend  | <http://localhost:5177>      |
+| API       | <http://localhost:8000>      |
+| API Docs  | <http://localhost:8000/docs> |
+| Grafana   | <http://localhost:3001>      |
 
-- **📱 Live Community Feed**: Real sneaker signals from Boston, NYC, LA, and Chicago
-- **🗺️ Interactive Heatmap**: See where the culture is happening
-- **👟 Upcoming Drops**: Community-curated release calendar
-- **🪙 LACES Economy**: Token rewards for authentic participation
-- **📊 Analytics Dashboard**: Community health and engagement metrics
+### Seed Demo Data (Optional)
+
+```bash
+docker compose exec api python -m services.seed
+```
 
 ---
 
-## 🏗️ Architecture
-*Built for scale, designed for community*
+## Tech Stack
 
-### The Stack
-
-```
-🎨 Frontend     → React + Vite + Tailwind (Modern, Fast, Beautiful)
-🔌 API          → FastAPI + SQLAlchemy (Python, Type-Safe, Async)
-🗄️ Database     → PostgreSQL + PostGIS (Geospatial, Reliable)
-⚡ Cache        → Redis (Lightning Fast)
-🔄 Workers      → Celery (Background Tasks, Scalable)
-📊 Monitoring   → Grafana + Prometheus (Observability)
-🐳 Infrastructure → Docker Compose (One Command Deploy)
-```
-
-### Key Services
-
-- **`api`** - Core FastAPI application serving the community
-- **`frontend`** - React app where the magic happens
-- **`worker`** - Background tasks for notifications, data processing
-- **`postgres`** - Community data with geospatial superpowers
-- **`redis`** - Real-time caching and message queuing
-- **`grafana`** - Beautiful dashboards for community insights
+| Layer      | Technology                           |
+|------------|--------------------------------------|
+| Frontend   | React, Vite, TailwindCSS, TypeScript |
+| Backend    | FastAPI, SQLAlchemy, Pydantic        |
+| Database   | PostgreSQL + PostGIS                 |
+| Cache      | Redis                                |
+| Workers    | Celery                               |
+| Monitoring | Prometheus, Grafana                  |
+| Container  | Docker Compose                       |
 
 ---
 
-## 🛍️ Marketplace Feed v2 (Hyperlocal Listings)
-*Underground marketplace, block-level awareness*
-
-The **Feed v2** system powers a hyperlocal marketplace experience:
-
-- **Listings Feed**: H3-indexed listings ranked by proximity, demand, and freshness
-- **Neighborhood Heat Index**: Demand metrics per micro-neighborhood (saves, views, DMs, trades)
-- **Activity Ribbon**: Real-time ticker of new listings, price drops, sales, and trade activity
-- **Trade Match Layer**: Suggested trades based on your inventory and wishlist
-
-### Backend Components
-
-- `services/core/h3_geo.py` – Uber H3 geospatial helpers
-- `services/models/listing.py` – `Listing` + `ListingSave` models
-- `services/models/feed_event.py` – `FeedEvent` for event-driven activity
-- `services/models/heat_index.py` – `NeighborhoodHeatIndex` with heat scoring
-- `services/models/trade_match.py` – `TradeMatch` + `UserWishlist`
-- `services/routers/feed_v2.py` – Hyperlocal feed, heat index, activity ribbon, trade matches, listing CRUD
-- `services/routers/activity_stream.py` – WebSocket activity stream
-- `worker/feed_tasks.py` – Celery tasks for ranking, heat updates, trade matching, cleanup
-- `services/alembic/versions/004_feed_v2_models.py` – DB migration for all of the above
-
-### Core API Endpoints
+## Project Structure
 
 ```text
-GET  /v2/feed/hyperlocal          # Hyperlocal listings feed
-GET  /v2/feed/heat-index          # Neighborhood heat index for a point
-GET  /v2/feed/heat-index/map      # Heatmap-ready data
-GET  /v2/feed/activity-ribbon     # Recent activity ticker
-GET  /v2/feed/trade-matches       # Suggested trades for current user
-POST /v2/feed/trade-matches/{id}/accept
-POST /v2/feed/trade-matches/{id}/decline
-
-POST /v2/listings                 # Create listing
-GET  /v2/listings/{id}            # Listing detail
-POST /v2/listings/{id}/save       # Save/bookmark listing
-DELETE /v2/listings/{id}/save     # Un-save
-POST /v2/listings/{id}/price-drop # Register a price drop
-POST /v2/listings/{id}/sold       # Mark as sold
-
-WS   /ws/activity                 # Real-time feed events by geo
-WS   /ws/listing/{id}             # Real-time updates for a listing
+├── frontend/           # React application
+│   └── src/
+│       ├── components/ # UI components
+│       ├── pages/      # Page views
+│       ├── hooks/      # Custom React hooks
+│       ├── lib/        # API client, utilities
+│       └── features/   # Feature modules
+├── services/           # FastAPI backend
+│   ├── routers/        # API endpoints
+│   ├── models/         # SQLAlchemy models
+│   ├── schemas/        # Pydantic schemas
+│   ├── core/           # Business logic, auth, geo
+│   ├── middleware/     # Request middleware
+│   └── alembic/        # Database migrations
+├── worker/             # Celery background tasks
+├── infra/              # Prometheus/Grafana config
+├── tests/              # Test suite
+└── docker-compose.yml  # Service orchestration
 ```
 
-### Seeding Demo Marketplace Data
+---
 
-The project includes a seed script to populate a realistic marketplace:
-
-- Cities: **Boston, NYC, LA, Chicago**
-- Brands: Jordan, Nike, Adidas, New Balance, Yeezy, etc.
-- Conditions: DS, VNDS, EXCELLENT, GOOD, FAIR
-- Automatic **heat index** computation per H3 cell
-
-Run from the repo root:
+## Make Commands
 
 ```bash
-docker compose run --rm api python seed_listings.py clear
-docker compose run --rm api python seed_listings.py 100
+make help      # Show all commands
+make up        # Start all services
+make down      # Stop all services
+make logs      # Tail service logs
+make status    # Show container status
+make doctor    # Check environment health
+make migrate   # Run database migrations
+make seed      # Populate demo data
+make test      # Run test suite
+make clean     # Remove containers and volumes
+make reset     # Full reset (removes images too)
 ```
-
-> Note: `make up` already runs migrations. Seeding is optional but highly recommended for the demo.
-
-### Frontend Experience
-
-- **Route**: `http://localhost:5177/marketplace`
-- **Page**: `frontend/src/pages/MarketplacePage.tsx`
-- **Components**:
-  - `ListingCard` (`frontend/src/components/marketplace/ListingCard.tsx`)
-  - `ActivityRibbon` (`frontend/src/components/marketplace/ActivityRibbon.tsx`)
-
-The Marketplace page:
-
-- Detects your location (or defaults to Boston)
-- Calls the `/v2/feed/hyperlocal` endpoint via `apiClient.getHyperlocalListings()`
-- Shows:
-  - Grid of nearby listings with price, condition, distance, and engagement stats
-  - Live activity ribbon showing new listings and price drops
-  - Heat level badge (cold / warm / hot / fire) based on `NeighborhoodHeatIndex`
-  - Filters for radius, sort, condition, and text search
 
 ---
 
-## 🛠️ Development Guide
-*Join the builders*
+## Key Features
 
-### Essential Commands
+- **Hyperlocal Marketplace** — H3-indexed listings ranked by proximity
+- **Real-time Activity Feed** — WebSocket-powered live updates
+- **Neighborhood Heat Index** — Demand metrics per micro-neighborhood
+- **Trade Matching** — Suggested swaps based on inventory/wishlist
+- **LACES Token Economy** — Rewards for community participation
+- **Leaderboards** — Track top contributors
+
+---
+
+## API Overview
+
+### Core Endpoints
+
+```text
+POST   /auth/register           # Create account
+POST   /auth/login              # Get JWT token
+GET    /users/me                # Current user profile
+
+GET    /v2/feed/hyperlocal      # Nearby listings
+GET    /v2/feed/heat-index      # Neighborhood demand
+GET    /v2/feed/activity-ribbon # Recent activity
+GET    /v2/feed/trade-matches   # Trade suggestions
+
+POST   /v2/listings             # Create listing
+GET    /v2/listings/{id}        # Listing detail
+POST   /v2/listings/{id}/save   # Bookmark listing
+
+GET    /leaderboard             # Top users
+GET    /health                  # Service health
+```
+
+### WebSocket
+
+```text
+WS /ws/activity           # Real-time feed events
+WS /ws/listing/{id}       # Listing updates
+```
+
+Full API documentation at `http://localhost:8000/docs`
+
+---
+
+## Environment Variables
+
+Copy `.env.example` to `.env` (done automatically by `make setup`).
+
+Key variables:
 
 ```bash
-make help      # 📖 See all available commands
-make up        # 🚀 Start all services  
-make down      # 🛑 Stop everything
-make logs      # 📋 Watch the magic happen
-make doctor    # 🩺 Health check your setup
-make test      # 🧪 Run the test suite
-make clean     # 🧹 Clean slate reset
-```
-
-### Project Structure
-
-```
-Dharma/
-├── 🎨 frontend/          # React + Vite app - where users experience Dharma
-│   ├── src/             # Source code
-│   │   ├── components/  # Reusable UI components
-│   │   ├── pages/       # Page components
-│   │   ├── lib/         # Utilities and helpers
-│   │   └── hooks/       # Custom React hooks
-│   └── package.json     # Frontend dependencies
-├── 🔌 services/         # FastAPI backend - the community engine
-│   ├── routers/         # API endpoints
-│   ├── models/          # Database schemas
-│   ├── core/            # Business logic
-│   ├── middleware/      # Request middleware
-│   └── alembic/         # Database migrations
-├── 👷 worker/           # Celery background tasks
-├── 📊 infra/            # Monitoring and observability
-├── 🧪 tests/            # Quality assurance
-├── 📝 docs/             # API documentation
-├── .env                 # Environment configuration
-└── Makefile             # Development commands
-```
-
-### Adding Features
-
-**Want to contribute?** Here's how to add value to the community:
-
-1. **New API Endpoints**: Add to `services/routers/`
-2. **Database Models**: Extend `services/models/`
-3. **Frontend Components**: Build in `frontend/src/components/`
-4. **Background Tasks**: Create in `worker/tasks.py`
-5. **Tests**: Always add to `tests/`
-
-### Code Philosophy
-
-- **🎯 Purpose-Driven**: Every line serves the community
-- **🔒 Privacy-First**: User data protection is non-negotiable  
-- **⚡ Performance**: Fast is a feature
-- **🧪 Tested**: Quality over quantity
-- **📖 Documented**: Code should tell a story
-
----
-
-## 🌍 The Community
-*This is bigger than code*
-
-### How to Contribute
-
-**🐛 Found a Bug?** Open an issue with details and steps to reproduce.
-
-**💡 Have an Idea?** Start a discussion—we love hearing from the community.
-
-**🔧 Want to Code?** 
-1. Fork the repo
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a PR with a clear description
-
-**📖 Improve Docs?** Documentation PRs are always welcome.
-
-### Community Values
-
-- **🤝 Inclusive**: Everyone belongs in sneaker culture
-- **🔒 Transparent**: Open source, open process, open community
-- **🎯 Authentic**: Real people, real passion, real impact
-- **🚀 Innovative**: Push boundaries, challenge norms
-- **🌱 Sustainable**: Build for the long term
-
----
-
-## 🪙 LACES Token Economy
-*Rewarding authentic participation*
-
-### How You Earn LACES
-
-- **📍 Location Signals**: Share real-time sneaker intel
-- **🤝 Community Help**: Assist with legit checks, sizing, advice
-- **🔧 Code Contributions**: Build features, fix bugs, improve docs
-- **📊 Data Quality**: Accurate drop info, store updates
-- **🎨 Content Creation**: Guides, tutorials, community resources
-
-### What LACES Unlock
-
-- **🎯 Priority Access**: Early access to new features
-- **🗳️ Governance Rights**: Vote on community decisions
-- **🏆 Recognition**: Leaderboards and community status
-- **🎁 Exclusive Content**: Special drops, insider info
-- **🤝 Networking**: Connect with other high-value contributors
-
----
-
-## 🔧 Configuration
-*Customize your Night Market experience*
-
-### Environment Variables
-
-Copy `.env.example` to `.env` and customize:
-
-```bash
-# 🗄️ Database
 DATABASE_URL=postgresql://dharma:password@postgres:5432/dharma
-
-# ⚡ Cache  
 REDIS_URL=redis://redis:6379/0
-
-# 🔌 API
+JWT_SECRET_KEY=your-secret-key
 API_PORT=8000
-JWT_SECRET_KEY=your_secret_here
-
-# 🎨 Frontend
-FRONTEND_PORT=5173
-VITE_API_URL=http://localhost:8000
-
-# 🌱 Demo Data
-AUTO_SEED_DATA=true
-DEMO_USERS_COUNT=50
-DEMO_POSTS_COUNT=200
+FRONTEND_PORT=5177
 ```
-
-### Advanced Configuration
-
-- **🔒 Security**: Configure JWT, CORS, rate limiting
-- **📊 Monitoring**: Set up Grafana dashboards
-- **🌐 Deployment**: Production environment variables
-- **🔧 Workers**: Celery task configuration
 
 ---
 
-## 🚀 Deployment
-*Take Night Market to production*
+## Troubleshooting
 
-### Docker Compose (Recommended)
+**Services won't start?**
 
 ```bash
-# Production deployment
-docker compose -f docker-compose.prod.yml up -d
+make doctor          # Check prerequisites
+docker compose logs  # View error output
 ```
 
-### Cloud Deployment
-
-Dharma is designed to run anywhere:
-
-- **☁️ AWS**: ECS, RDS, ElastiCache
-- **🌊 DigitalOcean**: App Platform, Managed Databases  
-- **🔵 Azure**: Container Instances, PostgreSQL
-- **🌐 Google Cloud**: Cloud Run, Cloud SQL
-- **⚡ Railway/Render**: One-click deployment
-
----
-
-## 📊 Monitoring & Observability
-
-### Built-in Dashboards
-
-- **📈 Grafana**: `http://localhost:3000` (admin/admin)
-- **🔍 Prometheus**: `http://localhost:9090`
-- **🩺 Health Checks**: `http://localhost:8000/health`
-
-### Key Metrics
-
-- **👥 Community Growth**: User registrations, engagement
-- **📍 Location Activity**: Geographic distribution of signals
-- **🪙 Token Economy**: LACES circulation, earning patterns
-- **⚡ Performance**: API response times, error rates
-- **🔧 Infrastructure**: Database performance, worker queues
-
----
-
-## 🤝 Join the Movement
-
-### Connect With Us
-
-- **💬 Discord**: [Join our community](https://discord.gg/dharma)
-- **🐦 Twitter**: [@DharmaNetwork](https://twitter.com/dharmanetwork)
-- **📧 Email**: community@dharma.network
-- **🌐 Website**: [dharma.network](https://dharma.network)
-
-### Support the Project
-
-- **⭐ Star the Repo**: Show your support
-- **🔄 Share**: Spread the word in your community
-- **🐛 Report Issues**: Help us improve
-- **💰 Sponsor**: Support ongoing development
-
----
-
-## 📜 License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
-Built with ❤️ by the sneaker community, for the sneaker community.
-
----
-
-## 🔥 Ready to Build?
+**Database issues?**
 
 ```bash
-git clone https://github.com/myspacecornelius/Night_Market.git
-cd Night_Market-6
-make setup && make up
+make migrate         # Re-run migrations
+make clean && make up  # Fresh start
 ```
 
-**Welcome to the underground. Let's build the future of sneaker culture together.**
+**Port conflicts?**
+Edit `.env` to change `API_PORT` or `FRONTEND_PORT`.
 
 ---
 
-*"The best way to predict the future is to build it."*
-*— The Dharma Community*
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make changes and add tests
+4. Submit a pull request
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
